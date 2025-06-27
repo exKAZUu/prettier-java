@@ -22,8 +22,13 @@ import {
 const { group, hardline, indent, join, line } = builders;
 
 export default {
-  compilationUnit(path, print) {
-    return [...printDanglingComments(path), printSingle(path, print), hardline];
+  compilationUnit(path, print, options) {
+    const danglingComments = printDanglingComments(path);
+    const content = printSingle(path, print);
+    const isEmbedded = !options.filepath?.endsWith('.java');
+    return isEmbedded
+      ? [...danglingComments, content]
+      : [...danglingComments, content, hardline];
   },
 
   ordinaryCompilationUnit(path, print) {
